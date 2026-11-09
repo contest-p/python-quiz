@@ -52,7 +52,57 @@ def create_default_quizzes():
             ]
 
 
-# STEP 5에서 퀴즈 풀기 함수를 여기에 추가해요.
+def play_quiz(quizzes):
+    if not quizzes:
+        print("등록된 퀴즈가 없어요.")
+        return
+
+    correct_count = 0
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"\n[문제 {number}]")
+        quiz.show()
+
+        selected = read_number("정답: ", len(quiz.choices))
+        if quiz.is_correct(selected):
+            print("정답입니다!!!!!!!!!!!!!!!!")
+            correct_count += 1
+        else:
+            print("오답이에요................")
+
+    score = correct_count / len(quizzes) * 100
+    print(f"\n결과: {len(quizzes)}문제 중 {correct_count}문제 정답 ({score:.1f}점)")
+
+
+# STEP 6에서 퀴즈 추가와 목록 기능을 여기에 넣어요.
+
+
+def main():
+    quizzes = create_default_quizzes()
+
+    while True:
+        print("\n=== 상식 퀴즈 게임 ===")
+        print("1. 퀴즈 풀기")
+        print("2. 퀴즈 추가")
+        print("3. 퀴즈 목록")
+        print("4. 점수 확인")
+        print("5. 종료")
+
+        choice = read_number("선택: ", 5)
+
+        if choice == 5:
+            print("게임을 종료합니다.")
+            break
+
+        if choice == 1:
+            play_quiz(quizzes)
+        # STEP 6에서 2번과 3번 메뉴를 여기에 연결해요.
+        else:
+            print(f"{choice}번을 선택했어요.")
+
+
+if __name__ == "__main__":
+    main()
 
 
 def main():
