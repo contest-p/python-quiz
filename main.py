@@ -1,3 +1,8 @@
+import json
+from pathlib import Path
+
+STATE_PATH = Path(__file__).resolve().with_name("state.json")
+
 class Quiz:
     # 퀴즈 한 문제를 담는 카드 양식이에요.
 
@@ -55,6 +60,64 @@ class QuizGame:
     def __init__(self):
         self.quizzes = create_default_quizzes()
         self.best_score = None
+        self.load_state()
+
+    def load_state(self):
+        try:
+            with STATE_PATH.open("r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            saved_quizzes = data["quizzes"]
+            best_score = data["best_score"]
+            if not isinstance(saved_quizzes, list):
+                raise ValueError("퀴즈 목록 형식이 올바르지 않아요.")
+            if best_score is not None and (
+                type(best_score) not in (int, float) or not 0 <= best_score <= 100
+            ):
+                raise ValueError("최고 점수 형식이 올바르지 않아요.")
+
+            quizzes = []
+            for item in saved_quizzes:
+                question = item["question"]
+                choices = item["choices"]
+                answer = item["answer"]
+                if (
+                    not isinstance(question, str)
+                    or not question.strip()
+                    or not isinstance(choices, list)
+                    or len(choices) != 4
+                    or any(not isinstance(choice, str) or not choice.strip() for choice in choices)
+                    or type(answer) is not int
+                    or not 1 <= answer <= 4
+                ):
+                    raise ValueError("저장된 퀴즈 형식이 올바르지 않아요.")
+                quizzes.append(Quiz(question, choices, answer))
+        except FileNotFoundError:
+            return
+        except (OSError, ValueError, KeyError, TypeError):
+            print("저장 파일을 읽을 수 없어 기본 상태로 시작합니다.")
+            return
+
+        self.quizzes = quizzes
+        self.best_score = best_score
+
+    def save_state(self):
+        data = {
+            "quizzes": [
+                {"question": quiz.question, "choices": quiz.choices, "answer": quiz.answer}
+                for quiz in self.quizzes
+            ],
+            "best_score": self.best_score,
+        }
+
+        try:
+            with STATE_PATH.open("w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=2)
+        except OSError:
+            print("저장 파일에 기록하지 못했어요.")
+        else:
+            print("퀴즈와 최고 점수를 저장했어요.")
+
     def play_quiz(self):
         if not self.quizzes:
             print("등록된 퀴즈가 없어요.")
@@ -144,4 +207,8 @@ class QuizGame:
 
 if __name__ == "__main__":
     game = QuizGame()
-    game.run()
+    try:
+        game.run()
+    except (KeyboardInterrupt, EOFError):
+        print("\n입력이 중단되어 게임을 종료합니다.")
+    game.save_state()
