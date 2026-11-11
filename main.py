@@ -51,95 +51,97 @@ def create_default_quizzes():
             3,),
             ]
 
+class QuizGame:
+    def __init__(self):
+        self.quizzes = create_default_quizzes()
+        self.best_score = None
+    def play_quiz(self):
+        if not self.quizzes:
+            print("등록된 퀴즈가 없어요.")
+            return
 
-def play_quiz(quizzes):
-    if not quizzes:
-        print("등록된 퀴즈가 없어요.")
-        return
+        correct_count = 0
 
-    correct_count = 0
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print(f"\n[문제 {number}]")
+            quiz.show()
 
-    for number, quiz in enumerate(quizzes, start=1):
-        print(f"\n[문제 {number}]")
-        quiz.show()
-
-        selected = read_number("정답: ", len(quiz.choices))
-        if quiz.is_correct(selected):
-            print("정답입니다!!!!!!!!!!!!!!!!")
-            correct_count += 1
-        else:
-            print("오답이에요................")
-
-    score = correct_count / len(quizzes) * 100
-    print(f"\n결과: {len(quizzes)}문제 중 {correct_count}문제 정답 ({score:.1f}점)")
-    return score
-
-def add_quiz(quizzes):
-    print("\n=== 퀴즈 추가 ===")
-
-    question = input("문제를 입력하세요: ").strip()
-    while not question:
-        print("문제를 비워 둘 수 없어요.")
-        question = input("문제를 입력하세요: ").strip()
-
-    choices = []
-    for number in range(1, 5):
-        choice = input(f"선택지 {number}: ").strip()
-        while not choice:
-            print("선택지를 비워 둘 수 없어요.")
-            choice = input(f"선택지 {number}: ").strip()
-        choices.append(choice)
-
-    answer = read_number("정답 번호 (1~4): ", 4)
-
-    quizzes.append(Quiz(question, choices, answer))
-    print("퀴즈가 추가되었습니다!")
-
-def show_quiz_list(quizzes):
-    if not quizzes:
-        print("등록된 퀴즈가 없어요.")
-        return
-
-    print(f"\n=== 등록된 퀴즈 목록 (총 {len(quizzes)}개) ===")
-    for number, quiz in enumerate(quizzes, start=1):
-        print(f"{number}. {quiz.question}")
-
-
-def main():
-    quizzes = create_default_quizzes()
-    best_score = None
-
-    while True:
-        print("\n=== 상식 퀴즈 게임 ===")
-        print("1. 퀴즈 풀기")
-        print("2. 퀴즈 추가")
-        print("3. 퀴즈 목록")
-        print("4. 점수 확인")
-        print("5. 종료")
-
-        choice = read_number("선택: ", 5)
-
-        if choice == 5:
-            print("게임을 종료합니다.")
-            break
-
-        if choice == 1:
-            score = play_quiz(quizzes)
-            if score is not None:
-                if best_score is None or score > best_score:
-                    best_score = score
-        elif choice == 2:
-            add_quiz(quizzes)
-        elif choice == 3:
-            show_quiz_list(quizzes)
-        elif choice == 4:
-            if best_score is None:
-                print("아직 퀴즈를 풀지 않았어요.")
+            selected = read_number("정답: ", len(quiz.choices))
+            if quiz.is_correct(selected):
+                print("정답입니다!!!!!!!!!!!!!!!!")
+                correct_count += 1
             else:
-                print(f"최고 점수: {best_score:.1f}점")
-        else:
-            print(f"{choice}번을 선택했어요.")
+                print("오답이에요................")
+
+        score = correct_count / len(self.quizzes) * 100
+        print(f"\n결과: {len(self.quizzes)}문제 중 {correct_count}문제 정답 ({score:.1f}점)")
+        return score
+
+    def add_quiz(self):
+        print("\n=== 퀴즈 추가 ===")
+
+        question = input("문제를 입력하세요: ").strip()
+        while not question:
+            print("문제를 비워 둘 수 없어요.")
+            question = input("문제를 입력하세요: ").strip()
+
+        choices = []
+        for number in range(1, 5):
+            choice = input(f"선택지 {number}: ").strip()
+            while not choice:
+                print("선택지를 비워 둘 수 없어요.")
+                choice = input(f"선택지 {number}: ").strip()
+            choices.append(choice)
+
+        answer = read_number("정답 번호 (1~4): ", 4)
+
+        self.quizzes.append(Quiz(question, choices, answer))
+        print("퀴즈가 추가되었습니다!")
+
+    def show_quiz_list(self):
+        if not self.quizzes:
+            print("등록된 퀴즈가 없어요.")
+            return
+
+        print(f"\n=== 등록된 퀴즈 목록 (총 {len(self.quizzes)}개) ===")
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print(f"{number}. {quiz.question}")
+
+
+    def run(self):
+
+        while True:
+            print("\n=== 상식 퀴즈 게임 ===")
+            print("1. 퀴즈 풀기")
+            print("2. 퀴즈 추가")
+            print("3. 퀴즈 목록")
+            print("4. 점수 확인")
+            print("5. 종료")
+
+            choice = read_number("선택: ", 5)
+
+            if choice == 5:
+                print("게임을 종료합니다.")
+                break
+
+            if choice == 1:
+                score = self.play_quiz()
+                if score is not None:
+                    if self.best_score is None or score > self.best_score:
+                        self.best_score = score
+            elif choice == 2:
+                self.add_quiz()
+            elif choice == 3:
+                self.show_quiz_list()
+            elif choice == 4:
+                if self.best_score is None:
+                    print("아직 퀴즈를 풀지 않았어요.")
+                else:
+                    print(f"최고 점수: {self.best_score:.1f}점")
+            else:
+                print(f"{choice}번을 선택했어요.")
 
 
 if __name__ == "__main__":
-    main()
+    game = QuizGame()
+    game.run()
