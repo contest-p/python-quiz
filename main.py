@@ -72,7 +72,7 @@ def play_quiz(quizzes):
 
     score = correct_count / len(quizzes) * 100
     print(f"\n결과: {len(quizzes)}문제 중 {correct_count}문제 정답 ({score:.1f}점)")
-
+    return score
 
 def add_quiz(quizzes):
     print("\n=== 퀴즈 추가 ===")
@@ -107,6 +107,7 @@ def show_quiz_list(quizzes):
 
 def main():
     quizzes = create_default_quizzes()
+    best_score = None
 
     while True:
         print("\n=== 상식 퀴즈 게임 ===")
@@ -123,11 +124,19 @@ def main():
             break
 
         if choice == 1:
-            play_quiz(quizzes)
+            score = play_quiz(quizzes)
+            if score is not None:
+                if best_score is None or score > best_score:
+                    best_score = score
         elif choice == 2:
             add_quiz(quizzes)
         elif choice == 3:
             show_quiz_list(quizzes)
+        elif choice == 4:
+            if best_score is None:
+                print("아직 퀴즈를 풀지 않았어요.")
+            else:
+                print(f"최고 점수: {best_score:.1f}점")
         else:
             print(f"{choice}번을 선택했어요.")
 
