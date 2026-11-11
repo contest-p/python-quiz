@@ -74,7 +74,26 @@ def play_quiz(quizzes):
     print(f"\n결과: {len(quizzes)}문제 중 {correct_count}문제 정답 ({score:.1f}점)")
 
 
-# STEP 6에서 퀴즈 추가와 목록 기능을 여기에 넣어요.
+def add_quiz(quizzes):
+    print("\n=== 퀴즈 추가 ===")
+
+    question = input("문제를 입력하세요: ").strip()
+    while not question:
+        print("문제를 비워 둘 수 없어요.")
+        question = input("문제를 입력하세요: ").strip()
+
+    choices = []
+    for number in range(1, 5):
+        choice = input(f"선택지 {number}: ").strip()
+        while not choice:
+            print("선택지를 비워 둘 수 없어요.")
+            choice = input(f"선택지 {number}: ").strip()
+        choices.append(choice)
+
+    answer = read_number("정답 번호 (1~4): ", 4)
+
+    quizzes.append(Quiz(question, choices, answer))
+    print("퀴즈가 추가되었습니다!")
 
 
 def main():
@@ -96,31 +115,10 @@ def main():
 
         if choice == 1:
             play_quiz(quizzes)
-        # STEP 6에서 2번과 3번 메뉴를 여기에 연결해요.
+        elif choice == 2:
+            add_quiz(quizzes)
         else:
             print(f"{choice}번을 선택했어요.")
-
-
-if __name__ == "__main__":
-    main()
-
-
-def main():
-    while True:
-        print("\n=== 상식 퀴즈 게임 ===")
-        print("1. 퀴즈 풀기")
-        print("2. 퀴즈 추가")
-        print("3. 퀴즈 목록")
-        print("4. 점수 확인")
-        print("5. 종료")
-
-        choice = read_number("선택: ", 5)
-
-        if choice == 5:
-            print("게임을 종료합니다.")
-            break
-
-        print(f"{choice}번을 선택했어요.")
 
 
 if __name__ == "__main__":
