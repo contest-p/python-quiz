@@ -95,6 +95,15 @@ def add_quiz(quizzes):
     quizzes.append(Quiz(question, choices, answer))
     print("퀴즈가 추가되었습니다!")
 
+def show_quiz_list(quizzes):
+    if not quizzes:
+        print("등록된 퀴즈가 없어요.")
+        return
+
+    print(f"\n=== 등록된 퀴즈 목록 (총 {len(quizzes)}개) ===")
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"{number}. {quiz.question}")
+
 
 def main():
     quizzes = create_default_quizzes()
@@ -117,6 +126,8 @@ def main():
             play_quiz(quizzes)
         elif choice == 2:
             add_quiz(quizzes)
+        elif choice == 3:
+            show_quiz_list(quizzes)
         else:
             print(f"{choice}번을 선택했어요.")
 
