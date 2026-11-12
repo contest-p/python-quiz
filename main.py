@@ -1,4 +1,5 @@
 import json
+import random
 from pathlib import Path
 
 STATE_PATH = Path(__file__).resolve().with_name("state.json")
@@ -123,9 +124,11 @@ class QuizGame:
             print("등록된 퀴즈가 없어요.")
             return
 
+        round_quizzes = self.quizzes.copy()
+        random.shuffle(round_quizzes)
         correct_count = 0
 
-        for number, quiz in enumerate(self.quizzes, start=1):
+        for number, quiz in enumerate(round_quizzes, start=1):
             print(f"\n[문제 {number}]")
             quiz.show()
 
